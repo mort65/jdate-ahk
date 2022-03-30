@@ -5,22 +5,10 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #Persistent 
 #SingleInstance, force
 
-jtoday := jToday()
+bJalali := True
+today := ""
 
-Menu, Tray, NoStandard
-Menu, Tray, NoMainWindow
-Menu, Tray, Tip , %jtoday%
-Menu, Tray, Add , Exit
-SetTimer, updateTip, 60000
-return
-
-Exit:
-SetTimer, updateTip, off
-sleep, 50
-ExitApp
-
-
-gregorian_to_jalali(gy,gm,gd) {
+gregorian_to_jalali(gd,gm,gy) {
     ;converts gregorian date to jalali
     if not gy or not gm or not gd
         Throw, "Invalid date"
@@ -38,11 +26,11 @@ gregorian_to_jalali(gy,gm,gd) {
     }
     jm := (days < 186) ? 1 + (days // 31) : 7 + ((days - 186) // 30)
     jd := 1 + ((days < 186) ? Mod(days,31) : (Mod((days - 186),30)))
-    jalali := [ jy, jm, jd ]
+    jalali := [ jd, jm, jy ]
     return jalali
 }
 
-jalali_to_gregorian(jy,jm,jd) {
+jalali_to_gregorian(jd,jm,jy) {
     ;;converts jalali date to gregorian
     if not gy or not gm or not gd
         Throw, "Invalid date"
@@ -69,22 +57,80 @@ jalali_to_gregorian(jy,jm,jd) {
         gd -= sal_a[gm]
         gm+=1
     }
-    gregorian := [ gy, gm - 1, gd ]
+    gregorian := [ gd, gm - 1, gy ]
     return gregorian
 }
 
-jToday()
+gToday()
 {
     ;languageCode_0409 := "English_United_States"
     vLang := Format("{:i}", "0x" "0409") ;hex to dec
     FormatTime, gDate, % "L" vLang, dd MM yyyy
-    gDateArr := StrSplit(gDate, A_Space)
-    jDateArr := (gregorian_to_jalali(gDateArr[3], gDateArr[2], gDateArr[1]))
-    return (jDateArr[1] . "/" . jDateArr[2] "/" . jDateArr[3])
+    gArr := StrSplit(gDate, A_Space)
+    return gArr
+    
 }
+
+jToday()
+{
+    gArr := gToday()
+    jArr := (gregorian_to_jalali(gArr[1], gArr[2], gArr[3]))
+    return jArr
+}
+
+today(dateArr)
+{
+    return (Format("{:04}", dateArr[3]) . "/" . Format("{:02}", dateArr[2]) "/" . Format("{:02}", dateArr[1]))
+}
+
+If bJalali
+{
+    today := today(jToday())
+}
+Else
+{
+    today := today(gToday())
+}
+
+Menu, Tray, NoStandard
+Menu, Tray, NoMainWindow
+Menu, Tray, Tip , %today%
+Menu, Tray, Add , Gregorian
+Menu, Tray, Add , Exit
+Menu, Tray, Default, Gregorian
+SetTimer, updateTip, 60000
+return
+
+Exit:
+SetTimer, updateTip, off
+sleep, 50
+ExitApp
+
+
+Gregorian:
+{
+    bJalali := !bJalali
+    gosub, updateTip
+    if bJalali
+        Menu, Tray, Rename, Jalali, Gregorian
+    else
+        Menu, Tray, Rename, Gregorian, Jalali
+    return
+}
+
+
+
  
 updateTip:
-{
-    jtoday := jToday()
-    Menu, Tray, Tip, %jtoday%
+{   
+    If bJalali
+    {
+        today := today(jToday())
+    }
+    Else
+    {
+        today := today(gToday())
+    }
+    Menu, Tray, Tip, %today%
+    return
 }
