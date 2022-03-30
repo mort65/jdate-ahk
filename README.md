@@ -1,2 +1,2 @@
 # jdate-ahk
-Shows current date in jalali calendar by hovering on the tray icon.
+Shows current date in Jalali/Gregorian calendar by hovering on the tray icon.
