@@ -80,7 +80,7 @@ jToday()
 
 today(dateArr)
 {
-    return (Format("{:04}", dateArr[3]) . "/" . Format("{:02}", dateArr[2]) "/" . Format("{:02}", dateArr[1]))
+    return (Format("{:04}", dateArr[3]) . "/" . Format("{:02}", dateArr[2]) . "/" . Format("{:02}", dateArr[1]))
 }
 
 If bJalali
