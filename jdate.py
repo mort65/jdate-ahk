@@ -23,7 +23,7 @@ def gregorian_to_jalali(gd,gm,gy):
     jy = -1595 + (33 * ((days // 12053)))
     days %= 12053
     jy += (4 * ((days // 1461)))
-    days = (days%1461)
+    days %= 1461
     if (days > 365):
         jy += ((days - 1) // 365)
         days = ((days - 1)%365)
