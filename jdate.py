@@ -3,7 +3,7 @@
 import datetime
 
 jMonth = ["Farvardin", "Ordibehesht", "Khordad", "Tir", "Mordad", "Shahrivar",
-        "Mehr", "Aban", "Azar", "Day" "Bahman" , "Esfand" ]
+        "Mehr", "Aban", "Azar", "Day", "Bahman", "Esfand" ]
 
 gMonth = ["January", "February", "March", "April", "May", "June", "July",
         "August", "September", "October", "November", "December" ]
